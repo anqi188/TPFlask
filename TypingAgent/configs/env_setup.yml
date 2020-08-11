@@ -1,0 +1,14 @@
+name: typing
+dependencies:
+  - python=3.7
+  - numpy
+  - opencv
+  - matplotlib
+  - jupyter
+  - pandas
+  - python-levenshtein
+  - pip:
+    - chainer
+    - chainerrl
+    - tqdm
+    - PyYAML

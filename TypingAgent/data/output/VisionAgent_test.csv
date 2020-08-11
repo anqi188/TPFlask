@@ -1,0 +1,12 @@
+model time,eyeloc x,eyeloc y,action x,action y,type
+0.0,2,1,,,start
+185.0,1,1,,,encoding
+217.2626,1,5,1,5,saccade
+402.2626,1,1,,,encoding
+434.6293,1,0,1,0,saccade
+619.6293,0,0,,,encoding
+652.2153,0,9,0,9,saccade
+716.0308,0,0,,,encoding
+666.0308,0,9,0,9,saccade
+851.0308,0,0,,,encoding
+883.2753,0,5,0,5,saccade
