@@ -11,7 +11,7 @@ import { EvMS } from "./cont/EvMS";
 class Demo extends Component {
   state = {
     value: 1,
-    sentence: "",
+    sentence: "zhuzhu",
   };
 
   onChangeSts = (e) => {
@@ -57,6 +57,16 @@ class Demo extends Component {
     }, 100);
   };
 
+  handleClickEvP = () => {
+    var data = { sentence: this.state.sentence };
+    var path = {
+      pathname: "/evaluate/process",
+      state: data,
+    };
+    // this.props.history.push("/evaluate/process");
+    this.props.history.push(path);
+  };
+
   render() {
     return (
       <div>
@@ -72,7 +82,7 @@ class Demo extends Component {
             className="button"
             type="primary"
             size="large"
-            onClick={this.handleClickEvM2}
+            onClick={this.handleClickEvP}
           >
             Start Evaluating
           </Button>

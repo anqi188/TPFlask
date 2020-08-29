@@ -194,14 +194,38 @@ const dataMRG = [
 ];
 
 class MRGeneral extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRG: columnsMRG,
+      dataMRG: dataMRG,
+    };
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    var tmp = this.state.dataMRG;
+    if (this.props.sentenceResult !== null) {
+      var sentenceResult = this.props.sentenceResult;
+      if (previousProps.sentenceResult !== sentenceResult) {
+        tmp[0].mrg1num = sentenceResult["sNum"];
+        tmp[1].mrg1num = sentenceResult["tNum"];
+        console.log(tmp);
+      }
+    }
+
+    if (previousProps.sentenceResult !== this.props.sentenceResult) {
+      this.setState({ dataMRG: tmp });
+    }
+  }
+
   render() {
     return (
       <div>
         <Table
           className="mrgeneral"
           pagination={false}
-          columns={columnsMRG}
-          dataSource={dataMRG}
+          columns={this.state.columnsMRG}
+          dataSource={this.state.dataMRG}
           style={{ margin: "-20px auto" }}
         />
       </div>
@@ -246,26 +270,127 @@ const dataMRP = [
   },
   {
     key: "4",
-    mrp1: "Uncorrected error rate (%):",
+    mrp1: "Immediate backspaces:",
+    mrpM: 2.61,
+    mrpSD: 1.81,
+  },
+  {
+    key: "5",
+    mrp1: "Delayed backspaces:",
+    mrpM: 2.61,
+    mrpSD: 1.81,
+  },
+  {
+    key: "6",
+    mrp1: "Corrected error rate (%):",
     mrpM: 0.56,
     mrpSD: 0.71,
   },
   {
-    key: "5",
-    mrp1: "Corrected error rate (%):",
+    key: "7",
+    mrp1: "Uncorrected error rate (%):",
     mrpM: 9.38,
     mrpSD: 5.75,
   },
 ];
 
 class MRPerformance extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRP: columnsMRP,
+      dataMRP: dataMRP,
+    };
+  }
+
+  componentDidMount() {
+    // parent didmount, child didupdate
+  }
+
+  meanCal = ([...data]) => {
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+      // total += parseFloat(data[i]);
+      total += data[i];
+    }
+    return total / data.length;
+  };
+
+  sdCal = ([...data]) => {
+    let mean = this.meanCal(data);
+    let total = 0;
+    for (let i = 0; i < data.length; i++) {
+      // total += (parseFloat(data[i]) - mean) ** 2;
+      total += (data[i] - mean) ** 2;
+    }
+    var variance = total / data.length;
+    return Math.sqrt(variance);
+  };
+
+  componentDidUpdate(previousProps, previousState) {
+    var sentenceResult = this.props.sentenceResult;
+
+    // // calculat mean and std with frontend
+    // if (previousProps.sentenceResult !== sentenceResult) {
+    //   var ikiArr = [];
+    //   var wpmArr = [];
+    //   var bsArr = [];
+    //   var imBsArr = [];
+    //   var dlBsArr = [];
+    //   var corErrArr = [];
+    //   var unErrArr = [];
+    //   var test = [];
+
+    //   for (var key in sentenceResult) {
+    //     var trials = sentenceResult[key];
+    //     for (var key in trials) {
+    //       ikiArr.push(parseFloat(trials[key]["iki"]));
+    //       test.push(parseFloat(trials[key]["iki"]));
+    //       wpmArr.push(parseFloat(trials[key]["wpm"]));
+    //       bsArr.push(parseFloat(trials[key]["bs"]));
+    //       imBsArr.push(parseFloat(trials[key]["imBs"]));
+    //       dlBsArr.push(parseFloat(trials[key]["dlBs"]));
+    //       corErrArr.push(parseFloat(trials[key]["corErr"]));
+    //       unErrArr.push(parseFloat(trials[key]["unErr"]));
+    //     }
+    //   }
+    //   var ikiMean = this.meanCal(ikiArr);
+    //   var ikiSd = this.sdCal(ikiArr);
+    // }
+    var tmp = this.state.dataMRP;
+    if (this.props.sentenceResult !== null) {
+      var sentenceResult = this.props.sentenceResult;
+      if (previousProps.sentenceResult !== sentenceResult) {
+        tmp[0].mrpM = sentenceResult["ikiMean"];
+        tmp[0].mrpSD = sentenceResult["ikiSD"];
+        tmp[1].mrpM = sentenceResult["wpmMean"];
+        tmp[1].mrpSD = sentenceResult["wpmSD"];
+        tmp[2].mrpM = sentenceResult["bsMean"];
+        tmp[2].mrpSD = sentenceResult["bsSD"];
+        tmp[3].mrpM = sentenceResult["imBsMean"];
+        tmp[3].mrpSD = sentenceResult["imBsSD"];
+        tmp[4].mrpM = sentenceResult["dlBsMean"];
+        tmp[4].mrpSD = sentenceResult["dlBsSD"];
+        tmp[5].mrpM = sentenceResult["corErrMean"];
+        tmp[5].mrpSD = sentenceResult["corErrSD"];
+        tmp[6].mrpM = sentenceResult["unErrMean"];
+        tmp[6].mrpSD = sentenceResult["unErrSD"];
+        console.log(tmp);
+      }
+    }
+
+    if (previousProps.sentenceResult !== this.props.sentenceResult) {
+      this.setState({ dataMRP: tmp });
+    }
+  }
+
   render() {
     return (
       <div>
         <Table
           pagination={false}
-          columns={columnsMRP}
-          dataSource={dataMRP}
+          columns={this.state.columnsMRP}
+          dataSource={this.state.dataMRP}
           style={{ margin: "-20px auto", backgroundColor: "#fffff!important" }}
         />
       </div>
@@ -310,12 +435,6 @@ const dataMRE = [
   },
   {
     key: "4",
-    mre1: "Uncorrected error rate (%):",
-    mreM: 0.56,
-    mreSD: 0.71,
-  },
-  {
-    key: "5",
     mre1: "Time ratio for gaze on keyboard:",
     mreM: 0.7,
     mreSD: 0.14,
@@ -323,13 +442,420 @@ const dataMRE = [
 ];
 
 class MREye extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRE: columnsMRE,
+      dataMRE: dataMRE,
+    };
+  }
+
+  componentDidMount() {
+    var tmp = this.state.dataMRE;
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    var tmp = this.state.dataMRE;
+    // console.log(this.props.targetstc);
+
+    if (this.props.targetstc !== null) {
+      tmp[0].mreM = parseFloat(this.props.targetstc.fixNum).toFixed(4);
+      tmp[0].mreSD = parseFloat(this.props.targetstc.fixNumSD).toFixed(14);
+      tmp[1].mreM = parseFloat(this.props.targetstc.fixDur).toFixed(14);
+      tmp[1].mreSD = parseFloat(this.props.targetstc.fixDurSD).toFixed(14);
+      tmp[2].mreM = parseFloat(this.props.targetstc.gazeShift).toFixed(4);
+      tmp[2].mreSD = parseFloat(this.props.targetstc.gazeShiftSD).toFixed(14);
+      tmp[3].mreM = parseFloat(this.props.targetstc.gazeRatio).toFixed(14);
+      tmp[3].mreSD = parseFloat(this.props.targetstc.gazeRatioSD).toFixed(14);
+    }
+
+    // to avoid infinite loop
+    if (previousProps.targetstc !== this.props.targetstc) {
+      this.setState({ dataMRE: tmp });
+    }
+  }
+
   render() {
     return (
       <div>
         <Table
           pagination={false}
-          columns={columnsMRE}
-          dataSource={dataMRE}
+          columns={this.state.columnsMRE}
+          dataSource={this.state.dataMRE}
+          style={{ margin: "-20px auto", backgroundColor: "#fffff!important" }}
+        />
+      </div>
+    );
+  }
+}
+
+// Main Result - Performance
+const columnsMRPS = [
+  {
+    title: " ",
+    dataIndex: "mrp1",
+    width: 500,
+  },
+  {
+    title: "Mean",
+    dataIndex: "mrpM",
+  },
+  {
+    title: "SD",
+    dataIndex: "mrpSD",
+  },
+];
+const dataMRPS = [
+  {
+    key: "1",
+    mrp1: "Inter-key interval (IKI, ms):",
+    mrpM: 380.94,
+    mrpSD: 50.95,
+  },
+  {
+    key: "2",
+    mrp1: "Words per minute (WPM):",
+    mrpM: 27.19,
+    mrpSD: 3.61,
+  },
+  {
+    key: "3",
+    mrp1: "Number of backspaces:",
+    mrpM: 2.61,
+    mrpSD: 1.81,
+  },
+  {
+    key: "4",
+    mrp1: "Immediate backspaces:",
+    mrpM: 2.61,
+    mrpSD: 1.81,
+  },
+  {
+    key: "5",
+    mrp1: "Delayed backspaces:",
+    mrpM: 2.61,
+    mrpSD: 1.81,
+  },
+  {
+    key: "6",
+    mrp1: "Corrected error rate (%):",
+    mrpM: 0.56,
+    mrpSD: 0.71,
+  },
+  {
+    key: "7",
+    mrp1: "Uncorrected error rate (%):",
+    mrpM: 9.38,
+    mrpSD: 5.75,
+  },
+];
+
+class MRPerformanceS extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRP: columnsMRPS,
+      dataMRP: dataMRPS,
+    };
+  }
+
+  componentDidMount() {
+    // parent didmount, child didupdate
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    var tmp = this.state.dataMRP;
+    if (this.props.targetstc !== null) {
+      tmp[0].mrpM = parseFloat(this.props.targetstc.iki).toFixed(14);
+      tmp[0].mrpSD = parseFloat(this.props.targetstc.ikiSD).toFixed(14);
+      tmp[1].mrpM = parseFloat(this.props.targetstc.wpm).toFixed(14);
+      tmp[1].mrpSD = parseFloat(this.props.targetstc.wpmSD).toFixed(14);
+      tmp[2].mrpM = parseFloat(this.props.targetstc.bs).toFixed(4);
+      tmp[2].mrpSD = parseFloat(this.props.targetstc.bsSD).toFixed(14);
+      tmp[3].mrpM = parseFloat(this.props.targetstc.imBs).toFixed(4);
+      tmp[3].mrpSD = parseFloat(this.props.targetstc.imBsSD).toFixed(14);
+      tmp[4].mrpM = parseFloat(this.props.targetstc.dlBs).toFixed(4);
+      tmp[4].mrpSD = parseFloat(this.props.targetstc.dlBsSD).toFixed(14);
+      tmp[5].mrpM = parseFloat(this.props.targetstc.corErr).toFixed(4);
+      tmp[5].mrpSD = parseFloat(this.props.targetstc.corErrSD).toFixed(14);
+      tmp[6].mrpM = parseFloat(this.props.targetstc.unErr).toFixed(4);
+      tmp[6].mrpSD = parseFloat(this.props.targetstc.unErrSD).toFixed(14);
+    }
+
+    if (previousProps.targetstc !== this.props.targetstc) {
+      this.setState({ dataMRP: tmp });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Table
+          pagination={false}
+          columns={this.state.columnsMRP}
+          dataSource={this.state.dataMRP}
+          style={{ margin: "-20px auto", backgroundColor: "#fffff!important" }}
+        />
+      </div>
+    );
+  }
+}
+
+// Main Result - Eye Gaze
+const columnsMRES = [
+  {
+    title: " ",
+    dataIndex: "mre1",
+    width: 500,
+  },
+  {
+    title: "Mean",
+    dataIndex: "mreM",
+  },
+  {
+    title: "SD",
+    dataIndex: "mreSD",
+  },
+];
+const dataMRES = [
+  {
+    key: "1",
+    mre1: "Number of fixations:",
+    mreM: 24.04,
+    mreSD: 4.56,
+  },
+  {
+    key: "2",
+    mre1: "Fixation duration:",
+    mreM: 303.99,
+    mreSD: 45.72,
+  },
+  {
+    key: "3",
+    mre1: "Number of gaze shift:",
+    mreM: 3.91,
+    mreSD: 1.5,
+  },
+  {
+    key: "4",
+    mre1: "Time ratio for gaze on keyboard:",
+    mreM: 0.7,
+    mreSD: 0.14,
+  },
+];
+
+class MREyeS extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRE: columnsMRES,
+      dataMRE: dataMRES,
+    };
+  }
+
+  componentDidMount() {
+    var tmp = this.state.dataMRE;
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    var tmp = this.state.dataMRE;
+    // console.log(this.props.targetstc);
+
+    if (this.props.targetstc !== null) {
+      tmp[0].mreM = parseFloat(this.props.targetstc.fixNum).toFixed(4);
+      tmp[0].mreSD = parseFloat(this.props.targetstc.fixNumSD).toFixed(14);
+      tmp[1].mreM = parseFloat(this.props.targetstc.fixDur).toFixed(14);
+      tmp[1].mreSD = parseFloat(this.props.targetstc.fixDurSD).toFixed(14);
+      tmp[2].mreM = parseFloat(this.props.targetstc.gazeShift).toFixed(4);
+      tmp[2].mreSD = parseFloat(this.props.targetstc.gazeShiftSD).toFixed(14);
+      tmp[3].mreM = parseFloat(this.props.targetstc.gazeRatio).toFixed(14);
+      tmp[3].mreSD = parseFloat(this.props.targetstc.gazeRatioSD).toFixed(14);
+    }
+
+    // to avoid infinite loop
+    if (previousProps.targetstc !== this.props.targetstc) {
+      this.setState({ dataMRE: tmp });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Table
+          pagination={false}
+          columns={this.state.columnsMRE}
+          dataSource={this.state.dataMRE}
+          style={{ margin: "-20px auto", backgroundColor: "#fffff!important" }}
+        />
+      </div>
+    );
+  }
+}
+
+// Trial Result - Performance
+const columnsMRPT = [
+  {
+    title: " ",
+    dataIndex: "mrp1",
+    width: 500,
+  },
+  {
+    title: "Value",
+    dataIndex: "mrpM",
+  },
+];
+const dataMRPT = [
+  {
+    key: "1",
+    mrp1: "Inter-key interval (IKI, ms):",
+    mrpM: 380.94,
+  },
+  {
+    key: "2",
+    mrp1: "Words per minute (WPM):",
+    mrpM: 27.19,
+  },
+  {
+    key: "3",
+    mrp1: "Number of backspaces:",
+    mrpM: 2.61,
+  },
+  {
+    key: "4",
+    mrp1: "Immediate backspaces:",
+    mrpM: 2.61,
+  },
+  {
+    key: "5",
+    mrp1: "Delayed backspaces:",
+    mrpM: 2.61,
+  },
+  {
+    key: "6",
+    mrp1: "Corrected error rate (%):",
+    mrpM: 0.56,
+  },
+  {
+    key: "7",
+    mrp1: "Uncorrected error rate (%):",
+    mrpM: 9.38,
+  },
+];
+
+class MRPerformanceT extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRP: columnsMRPT,
+      dataMRP: dataMRPT,
+    };
+  }
+
+  componentDidMount() {
+    // parent didmount, child didupdate
+  }
+
+  componentDidUpdate(previousProps, previousState) {
+    var tmp = this.state.dataMRP;
+    if (this.props.targettrl !== null) {
+      tmp[0].mrpM = parseFloat(this.props.targettrl.iki).toFixed(14);
+      tmp[1].mrpM = parseFloat(this.props.targettrl.wpm).toFixed(14);
+      tmp[2].mrpM = parseFloat(this.props.targettrl.bs).toFixed(0);
+      tmp[3].mrpM = parseFloat(this.props.targettrl.imBs).toFixed(0);
+      tmp[4].mrpM = parseFloat(this.props.targettrl.dlBs).toFixed(0);
+      tmp[5].mrpM = parseFloat(this.props.targettrl.corErr).toFixed(0);
+      tmp[6].mrpM = parseFloat(this.props.targettrl.unErr).toFixed(0);
+    }
+
+    if (previousProps.targettrl !== this.props.targettrl) {
+      this.setState({ dataMRP: tmp });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Table
+          pagination={false}
+          columns={this.state.columnsMRP}
+          dataSource={this.state.dataMRP}
+          style={{ margin: "-20px auto", backgroundColor: "#fffff!important" }}
+        />
+      </div>
+    );
+  }
+}
+
+// Trial Result - Eye Gaze
+const columnsMRET = [
+  {
+    title: " ",
+    dataIndex: "mre1",
+    width: 500,
+  },
+  {
+    title: "Value",
+    dataIndex: "mreM",
+  },
+];
+const dataMRET = [
+  {
+    key: "1",
+    mre1: "Number of fixations:",
+    mreM: 24.04,
+  },
+  {
+    key: "2",
+    mre1: "Fixation duration:",
+    mreM: 303.99,
+  },
+  {
+    key: "3",
+    mre1: "Number of gaze shift:",
+    mreM: 3.91,
+  },
+  {
+    key: "4",
+    mre1: "Time ratio for gaze on keyboard:",
+    mreM: 0.7,
+  },
+];
+
+class MREyeT extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      columnsMRE: columnsMRET,
+      dataMRE: dataMRET,
+    };
+  }
+
+  componentDidMount() {}
+
+  componentDidUpdate(previousProps, previousState) {
+    var tmp = this.state.dataMRE;
+    // console.log(this.props.targetstc);
+
+    if (this.props.targettrl !== null) {
+      tmp[0].mreM = parseFloat(this.props.targettrl.fixNum).toFixed(0);
+      tmp[1].mreM = parseFloat(this.props.targettrl.fixDur).toFixed(14);
+      tmp[2].mreM = parseFloat(this.props.targettrl.gazeShift).toFixed(0);
+      tmp[3].mreM = parseFloat(this.props.targettrl.gazeRatio).toFixed(14);
+    }
+
+    // to avoid infinite loop
+    if (previousProps.targettrl !== this.props.targettrl) {
+      this.setState({ dataMRE: tmp });
+    }
+  }
+
+  render() {
+    return (
+      <div>
+        <Table
+          pagination={false}
+          columns={this.state.columnsMRE}
+          dataSource={this.state.dataMRE}
           style={{ margin: "-20px auto", backgroundColor: "#fffff!important" }}
         />
       </div>
@@ -384,5 +910,9 @@ export {
   MRGeneral,
   MRPerformance,
   MREye,
+  MRPerformanceS,
+  MREyeS,
   MRFinger,
+  MRPerformanceT,
+  MREyeT,
 };

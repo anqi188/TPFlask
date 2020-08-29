@@ -5,11 +5,33 @@ import { Card, Button } from "antd";
 import "../css/comp/CCard.less";
 
 class EvCard1 extends Component {
+  constructor() {
+    super();
+
+    // this.mesRef = React.createRef();
+    // this.refs = React.createRef();
+  }
+
+  componentDidUpdate() {
+    this.newData.scrollIntoView({ behavior: "smooth" });
+  }
+
   render() {
     return (
-      <Card style={{ width: "85%", height: 450, fontSize: 18 }}>
+      <Card
+        style={{
+          width: "85%",
+          height: 450,
+          fontSize: 18,
+          overflow: "auto",
+          // display: "flex",
+          // flexDirection: "column-reverse",
+        }}
+      >
         <p>The model training message will be presented here......</p>
-        <p>{this.props.content}</p>
+        {this.props.content}
+        <div ref={(ref) => (this.newData = ref)} />
+        {/* <div ref={(ref) => (this.newData = ref)}>{this.props.content}</div> */}
       </Card>
     );
   }
@@ -50,7 +72,12 @@ class EvCard3 extends Component {
         headStyle={{ height: 63, fontSize: 20 }}
         style={{ margin: "30px 30px", fontSize: 18 }}
         actions={[
-          <Button className="button" type="primary" ghost>
+          <Button
+            className="button"
+            type="primary"
+            ghost
+            onClick={this.props.handleFilter}
+          >
             Fliter
           </Button>,
           <Button className="button">Clear</Button>,

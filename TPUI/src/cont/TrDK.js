@@ -13,7 +13,7 @@ function ipValue(fields, name) {
 class Key extends Component {
   // pass the style to keyboard
   getStyle1(fields) {
-    if (JSON.stringify(fields[0]) != undefined) {
+    if (JSON.stringify(fields[0]) !== undefined) {
       let width = (ipValue(fields, "skbw") * ipValue(fields, "kbw")) / 10.0;
       let height = (ipValue(fields, "skbh") * ipValue(fields, "kbh") + 2) / 4.0;
 
@@ -23,7 +23,7 @@ class Key extends Component {
   }
 
   getStyle2(fields) {
-    if (JSON.stringify(fields[0]) != undefined) {
+    if (JSON.stringify(fields[0]) !== undefined) {
       let width =
         ((ipValue(fields, "skbw") * ipValue(fields, "kbw")) / 10.0) * 0.84;
       let height =
@@ -51,7 +51,7 @@ class Key extends Component {
 
 class SpaceKey extends Component {
   getStyle1(fields) {
-    if (JSON.stringify(fields[0]) != undefined) {
+    if (JSON.stringify(fields[0]) !== undefined) {
       let width =
         ((ipValue(fields, "skbw") * ipValue(fields, "kbw")) / 10.0) * 4;
       let height = (ipValue(fields, "skbh") * ipValue(fields, "kbh") + 2) / 4.0;
@@ -91,7 +91,7 @@ class MyKeyboard extends Component {
     var fields = this.props.fields;
     const rowData = [];
 
-    if (JSON.stringify(fields[0]) != undefined) {
+    if (JSON.stringify(fields[0]) !== undefined) {
       // console.log(fields);
 
       var numRowKey = ipValue(fields, nk);
@@ -123,7 +123,7 @@ class MyKeyboard extends Component {
 
   // pass the style to keyboard
   getStyle(fields) {
-    if (JSON.stringify(fields[0]) != undefined) {
+    if (JSON.stringify(fields[0]) !== undefined) {
       let width = ipValue(fields, "skbw") * ipValue(fields, "kbw");
       let height = ipValue(fields, "skbh") * ipValue(fields, "kbh");
       return { width: width, height: height, visibility: "visible" };
@@ -173,7 +173,7 @@ class Device extends Component {
   }
 
   getStyle(fields) {
-    if (JSON.stringify(fields[0]) != undefined) {
+    if (JSON.stringify(fields[0]) !== undefined) {
       let width = ipValue(fields, "dvw");
       let height = ipValue(fields, "dvh");
       return { width: width, height: height, visibility: "visible" };

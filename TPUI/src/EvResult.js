@@ -8,7 +8,7 @@ import { ECollapse, ECollapseAct } from "./comp/CCollapse";
 
 import { EvMR } from "./cont/EvMR";
 import { EvSR } from "./cont/EvSR";
-import { EvTR } from "./cont/EvTR";
+import { EvTR, EvTR1 } from "./cont/EvTR";
 
 class EvResult extends Component {
   render() {
@@ -25,7 +25,12 @@ class EvResult extends Component {
           <EvTR />
         </ECollapseAct>
         <div className="start-ev-btn">
-          <Button className="button" type="primary" size="large">
+          <Button
+            className="button"
+            type="primary"
+            size="large"
+            onClick={this.handleClick}
+          >
             Save the Model
           </Button>
         </div>

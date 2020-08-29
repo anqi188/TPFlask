@@ -1,0 +1,2 @@
+sentence_id,sentence,wpm,err_lev_dist,gaze_shift_kb_to_txt,n_backspace,immediate_backspace,delay_backspace,proportion_gaze_kb,n_fixations_freq,finger_travel_dist
+58,zhuzhu>,41.18280343387737,0,3,0,0,0,0.7677073176302978,10,0.22364053693599795

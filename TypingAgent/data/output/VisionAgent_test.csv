@@ -1,12 +1,14 @@
 model time,eyeloc x,eyeloc y,action x,action y,type
-0.0,2,1,,,start
-185.0,1,1,,,encoding
-217.2626,1,5,1,5,saccade
-402.2626,1,1,,,encoding
-434.6293,1,0,1,0,saccade
-619.6293,0,0,,,encoding
-652.2153,0,9,0,9,saccade
-716.0308,0,0,,,encoding
-666.0308,0,9,0,9,saccade
-851.0308,0,0,,,encoding
-883.2753,0,5,0,5,saccade
+0.0,2,2,,,start
+63.8155,2,2,,,encoding
+13.8155,2,2,2,2,saccade
+198.8155,1,1,,,encoding
+230.8985,1,5,1,5,saccade
+409.2828,1,1,,,encoding
+359.2828,1,5,0,6,saccade
+544.2828,2,2,,,encoding
+576.3657,2,2,2,2,saccade
+761.3657,1,1,,,encoding
+793.4487,1,5,1,5,saccade
+971.833,1,1,,,encoding
+921.833,1,5,0,6,saccade

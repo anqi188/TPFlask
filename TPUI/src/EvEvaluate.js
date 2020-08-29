@@ -9,11 +9,43 @@ import { EStep2, EStepV } from "./comp/CSteps";
 import { CProgress } from "./comp/CProgress";
 import { EvCard1 } from "./comp/CCard";
 
+const modelLogs = [{ log: "This is the evaluation log" }];
+
+// Rendering list data
+class ModelLog extends Component {
+  render() {
+    const { modelLog } = this.props;
+    return (
+      <div>
+        <div>{modelLog.log}</div>
+      </div>
+    );
+  }
+}
+
+function dataHandle(xhr, position) {
+  var messages = xhr.responseText.split("\n");
+  messages.slice(position, -1).forEach(function (value) {
+    console.log(value);
+  });
+  position = messages.length - 1;
+}
+
 class EvEvaluate extends Component {
-  state = {
-    checked: false,
-    modelProc: " ",
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      checked: false,
+      sentence: "",
+      log: modelLogs,
+    };
+  }
+
+  // state = {
+  //   checked: false,
+  //   sentence: "",
+  //   log: modelLogs,
+  // };
 
   onChange = (e) => {
     console.log("checked");
@@ -24,6 +56,80 @@ class EvEvaluate extends Component {
 
   handleClickEvR = () => {
     this.props.history.push("/evaluate/result");
+  };
+
+  handleClickUpdate = () => {};
+
+  // Pass the parameter from the model
+  componentDidMount() {
+    var data = this.props.location.state;
+
+    setTimeout(() => {
+      if (data != undefined) {
+        var { sentence } = data;
+        this.setState({
+          sentence: sentence,
+          log: modelLogs,
+        });
+        this.startEvaluation();
+        console.log(this.state.log);
+      }
+    }, 0);
+  }
+
+  // Start evaluation by calling the api
+  startEvaluation = () => {
+    var xhr = new XMLHttpRequest();
+    console.log(this.state.sentence);
+    var url = "/stream/?sentence=" + this.state.sentence;
+    console.log(url);
+    // var url = "/stream";
+
+    xhr.open("GET", url, true);
+    xhr.setRequestHeader("content-type", "text/event-stream;charset=UTF-8");
+    xhr.send();
+    var position = 0;
+
+    // !IMPORTANT to make sure this calls the correct function
+    // You’re calling this.setState inside of your callback to Messages.slice().
+    // You need to cache the reference to this outside of that API call.
+    let currentComponent = this;
+
+    function dataHandle() {
+      var messages = xhr.responseText.split("\n");
+      var log = "";
+      // Get the new line and update the state to trigger rendering
+      messages.slice(position, -1).forEach(function (value) {
+        console.log(value);
+
+        log = value;
+        var json = { log: log };
+        modelLogs.push(json);
+        console.log(modelLogs);
+
+        currentComponent.setState({
+          log: modelLogs,
+        });
+      });
+      position = messages.length - 1;
+    }
+
+    var timer;
+    timer = setInterval(function () {
+      // loading the unfinished data
+      if (xhr.readyState == 3) {
+        // dataHandle(xhr, position);
+
+        dataHandle();
+      }
+
+      // stop checking once the response has ended
+      if (xhr.readyState == 4) {
+        dataHandle();
+        clearInterval(timer);
+        console.log("done");
+      }
+    }, 100);
   };
 
   render() {
@@ -56,7 +162,11 @@ class EvEvaluate extends Component {
           </h4>
           <div className="evprocess">
             <EStepV />
-            <EvCard1 content={<p>{this.state.modelProc}</p>} />
+            <EvCard1
+              content={modelLogs.map((modelLog, i) => (
+                <ModelLog key={i} modelLog={modelLog} />
+              ))}
+            />
           </div>
           <Checkbox
             onChange={this.onChange}
@@ -92,7 +202,11 @@ class EvEvaluate extends Component {
               Check Results
             </Button>
 
-            <Button className="button" size="large">
+            <Button
+              className="button"
+              size="large"
+              onClick={this.handleClickUpdate}
+            >
               Cancel
             </Button>
           </div>
